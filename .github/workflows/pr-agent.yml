@@ -2,18 +2,21 @@ name: Codium PR Agent
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
 jobs:
-  codium_pr_agent:
+  pr_agent_job:
+    if: ${{ github.event.sender.type != 'Bot' }}
     runs-on: ubuntu-latest
-
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent on every pull request, respond to user comments
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Run Codium PR Agent
-        uses: codium-ai/pr-agent-action@latest
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          openai-key: ${{ secrets.OPENAI_API_KEY }}  # Optional for AI features
+      - name: PR Agent action step
+        id: pragent
+        uses: qodo-ai/pr-agent@main
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

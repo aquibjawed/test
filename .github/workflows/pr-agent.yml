@@ -1,0 +1,19 @@
+name: Codium PR Agent
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  codium_pr_agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run Codium PR Agent
+        uses: codium-ai/pr-agent-action@latest
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          openai-key: ${{ secrets.OPENAI_API_KEY }}  # Optional for AI features

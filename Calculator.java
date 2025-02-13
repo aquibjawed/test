@@ -1,46 +1,95 @@
-import java.math.BigInteger;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
-public class LargeNumberCalculator {
+// Strategy Interface
+interface Operation {
+    double execute(double a, double b);
+}
+
+// Concrete Strategies
+class Addition implements Operation {
+    public double execute(double a, double b) {
+        return a + b;
+    }
+}
+
+class Subtraction implements Operation {
+    public double execute(double a, double b) {
+        return a - b;
+    }
+}
+
+class Multiplication implements Operation {
+    public double execute(double a, double b) {
+        return a * b;
+    }
+}
+
+class Division implements Operation {
+    public double execute(double a, double b) {
+        if (b == 0) {
+            System.out.println("Error: Division by zero is not allowed.");
+            return Double.NaN;
+        }
+        return a / b;
+    }
+}
+
+// Context Class
+class Calculator {
+    private Operation operation;
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
+    public double executeOperation(double a, double b) {
+        return operation.execute(a, b);
+    }
+
+    public static boolean isValidOperator(String operator) {
+        return Pattern.matches("[+\-*/]", operator);
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter first large number:");
-        BigInteger num1 = new BigInteger(scanner.nextLine());
-
-        System.out.println("Enter second large number:");
-        BigInteger num2 = new BigInteger(scanner.nextLine());
-
-        System.out.println("Choose operation (+, -, *):");
-        char operation = scanner.next().charAt(0);
-
-        BigInteger result;
-        switch (operation) {
+        Calculator calculator = new Calculator();
+        
+        System.out.println("Simple Calculator");
+        System.out.print("Enter first number: ");
+        double num1 = scanner.nextDouble();
+        
+        System.out.print("Enter an operator (+, -, *, /): ");
+        String operator = scanner.next();
+        
+        if (!isValidOperator(operator)) {
+            System.out.println("Invalid operator!");
+            return;
+        }
+        
+        System.out.print("Enter second number: ");
+        double num2 = scanner.nextDouble();
+        
+        switch (operator.charAt(0)) {
             case '+':
-                result = num1.add(num2);
+                calculator.setOperation(new Addition());
                 break;
             case '-':
-                result = num1.subtract(num2);
+                calculator.setOperation(new Subtraction());
                 break;
             case '*':
-                result = num1.multiply(num2);
+                calculator.setOperation(new Multiplication());
+                break;
+            case '/':
+                calculator.setOperation(new Division());
                 break;
             default:
-                System.out.println("Invalid operation!");
-                scanner.close();
+                System.out.println("Invalid operator!");
                 return;
         }
-
+        
+        double result = calculator.executeOperation(num1, num2);
         System.out.println("Result: " + result);
         scanner.close();
     }
-
-    private boolean test(){
-        return null;
-    }
-
-    private boolean test2(){
-        return null;
-    }
-    
 }

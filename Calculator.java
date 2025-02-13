@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -38,9 +40,17 @@ class Division implements Operation {
 // Context Class
 class Calculator {
     private Operation operation;
+    private static final Map<String, Operation> operations = new HashMap<>();
+    
+    static {
+        operations.put("+", new Addition());
+        operations.put("-", new Subtraction());
+        operations.put("*", new Multiplication());
+        operations.put("/", new Division());
+    }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
+    public void setOperation(String operator) {
+        this.operation = operations.get(operator);
     }
 
     public double executeOperation(double a, double b) {
@@ -48,7 +58,7 @@ class Calculator {
     }
 
     public static boolean isValidOperator(String operator) {
-        return Pattern.matches("[+\-*/]", operator);
+        return operations.containsKey(operator);
     }
 
     public static void main(String[] args) {
@@ -70,24 +80,7 @@ class Calculator {
         System.out.print("Enter second number: ");
         double num2 = scanner.nextDouble();
         
-        switch (operator.charAt(0)) {
-            case '+':
-                calculator.setOperation(new Addition());
-                break;
-            case '-':
-                calculator.setOperation(new Subtraction());
-                break;
-            case '*':
-                calculator.setOperation(new Multiplication());
-                break;
-            case '/':
-                calculator.setOperation(new Division());
-                break;
-            default:
-                System.out.println("Invalid operator!");
-                return;
-        }
-        
+        calculator.setOperation(operator);
         double result = calculator.executeOperation(num1, num2);
         System.out.println("Result: " + result);
         scanner.close();

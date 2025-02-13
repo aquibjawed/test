@@ -37,4 +37,10 @@ public class LargeNumberCalculator {
 
     private boolean test(){
         return null;
+    }
+
+    private boolean test2(){
+        return null;
+    }
+    
 }

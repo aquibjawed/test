@@ -34,4 +34,7 @@ public class LargeNumberCalculator {
         System.out.println("Result: " + result);
         scanner.close();
     }
+
+    private boolean test(){
+        return null;
 }
